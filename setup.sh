@@ -17,9 +17,9 @@ sudo apt install vlc vsftpd screen
 
 sudo systemctl enable --now cron ssh
 
-sudo sed 's/#hdmi_drive/hdmi_drive/' -i /boot/config.txt
+sudo sed 's/\#hdmi_drive/hdmi_drive/' -i /boot/config.txt
 
-sudo sed 's/#write_enable=NO/write_enable=YES/' -i /etc/vsftpd.conf
+sudo sed 's/\#write_enable=NO/write_enable=YES/' -i /etc/vsftpd.conf
 
 echo "Enter the password for ftp user"
 sudo passwd ftp
