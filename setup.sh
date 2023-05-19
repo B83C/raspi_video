@@ -15,7 +15,7 @@ fi
 
 sudo apt install vlc vsftpd screen
 
-sudo systemctl enable --now cron
+sudo systemctl enable --now cron ssh
 
 sudo sed 's/#hdmi_drive/hdmi_drive/' -i /boot/config.txt
 
