@@ -104,20 +104,20 @@ write_files:
     content: |                      # File content
       31 06 * * 1-5 pi /usr/bin/screen -dmS videoloop /opt/raspivideo/videoloop.sh 
       31 06 * * 1-5 root raspi-gpio set 17 op dl
-      31 06 * * 1-5 root echo "on 0" | /usr/bin/cec-client -s
+      31 06 * * 1-5 root echo "on 0" | /usr/bin/cec-client -s -d 1
       59 14 * * 1-5 pi /usr/bin/screen -XS videoloop quit
       59 14 * * 1-5 root raspi-gpio set 17 op dh
-      59 14 * * 1-5 root echo "off 0" | /usr/bin/cec-client -s
+      59 14 * * 1-5 root echo "off 0" | /usr/bin/cec-client -s -d 1
       01 06 * * 6 pi /usr/bin/screen -dmS videoloop /opt/raspivideo/videoloop.sh 
       01 06 * * 6 root raspi-gpio set 17 op dl
-      01 06 * * 6 root echo "on 0" | /usr/bin/cec-client -s
+      01 06 * * 6 root echo "on 0" | /usr/bin/cec-client -s -d 1
       59 12 * * 6 pi /usr/bin/screen -XS videoloop quit
       59 12 * * 6 root raspi-gpio set 17 op dh
-      59 12 * * 6 root echo "off 0" | /usr/bin/cec-client -s
+      59 12 * * 6 root echo "off 0" | /usr/bin/cec-client -s -d 1
 
       @reboot pi /usr/bin/screen -dmS videoloop /opt/raspivideo/videoloop.sh
       @reboot root raspi-gpio set 17 op dl
-      @reboot root echo "on 0" | /usr/bin/cec-client -s
+      @reboot root echo "on 0" | /usr/bin/cec-client -s -d 1
 
 # # Reference(s):
 # # - https://cloudinit.readthedocs.io/en/latest/topics/modules.html#write-files
