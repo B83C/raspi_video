@@ -1,0 +1,137 @@
+#cloud-config
+# vim: syntax=yaml
+#
+# BerryOS Default Cloud Config
+#
+
+# ## Set system hostname
+hostname: raspivideo2                    # System hostname
+manage_etc_hosts: true              # If true, will also update the /etc/hosts file entries
+# # Reference(s):
+# # - https://cloudinit.readthedocs.io/en/latest/topics/modules.html#set-hostname
+# # - https://cloudinit.readthedocs.io/en/latest/topics/modules.html#update-etc-hosts
+
+# ## Configure default user access
+password: CHkl19190321 # Set default user password
+chpasswd: { expire: false }         # Do not expire password after first login
+ssh_pwauth: true                    # Enable SSH password authentication for default user
+# ssh_authorized_keys:                # Set SSH authorized keys for default user
+#   - ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAGEA3FSyQwBI6Z+nCSjUU ...
+#   - ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA3I7VUf2l5gSn5uavROsc5HRDpZ ...
+# ssh_import_id:                      # Import SSH authorized keys from a remote source for default user
+#   - gh:0rax
+# # Reference(s):
+# # - https://cloudinit.readthedocs.io/en/latest/topics/modules.html#set-passwords
+# # - https://cloudinit.readthedocs.io/en/latest/topics/modules.html#authorized-keys
+# # - https://cloudinit.readthedocs.io/en/latest/topics/modules.html#ssh-import-id
+
+# ## Create your own user (overrides default user configuration)
+users:
+  - default
+  - name: ftp
+    passwd: $y$j9T$7Dc40hozymD13FDvQfEvU/$zk9n2xHGzKEWy/EjSjSFF7oDXbs/kX9Ijmkt7cDr1l/
+    shell: /usr/sbin/nologin                # Set user default shell
+    chpasswd: { expire: false }     # Do not expire password after first login
+
+#   - name: myuser                    # Create new custom user
+#     gecos: "My Custom User"         # Set user description
+#     sudo: ALL=(ALL) NOPASSWD:ALL    # Enable passwordless sudo
+#     shell: /bin/bash                # Set user default shell
+#     groups:                         # Set user groups
+#       [adm, dialout, cdrom, sudo, audio, video, plugdev, games, users, input, render, netdev]
+#     passwd: berryos                 # Set user password
+#     chpasswd: { expire: false }     # Do not expire password after first login
+#     ssh_pwauth: true                # Allow SSH password auth for the user
+#     ssh_authorized_keys:            # Set SSH authorized keys for the user
+#       - ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAGEA3FSyQwBI6Z+nCSjUU ...
+#       - ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA3I7VUf2l5gSn5uavROsc5HRDpZ ...
+#     ssh_import_id:                  # Import SSH authorized keys from a remote source for the user
+#       - gh:0rax
+# # Reference(s):
+# # - https://cloudinit.readthedocs.io/en/latest/topics/modules.html#users-and-groups
+
+# ## Set the system timezone
+timezone: "Asia/Kuala_Lumpur"           # Timezone value must exist in /usr/share/zoneinfo
+# # Reference(s):
+# # - https://cloudinit.readthedocs.io/en/latest/topics/modules.html#timezone
+
+# ## Configure NTP pools
+ntp:
+  enabled: true                     # Enable NTP module
+  pools:                            # Specift custom pool uri
+    - 0.my.pool.ntp.org
+    - 1.my.pool.ntp.org
+    - 2.my.pool.ntp.org
+    - 3.my.pool.ntp.org
+# # Reference(s):
+# # - https://cloudinit.readthedocs.io/en/latest/topics/modules.html#ntp
+
+# # Update package list, upgrade system or install new packages on first boot
+package_update: true                # Update package list
+package_upgrade: true               # Update system package on first-noot
+package_reboot_if_required: true    # Reboot system after installing or upgrading if needed
+packages:                           # Install additional packages
+  - vlc
+  - screen
+  - proftpd
+  - raspi-gpio
+  - cec-utils
+  - fonts-arphic-ukai
+  
+# # Reference(s):
+# # - https://cloudinit.readthedocs.io/en/latest/topics/modules.html#package-update-upgrade-install
+
+# ## Write custom files to disk
+write_files:
+  - path: /opt/raspivideo/videoloop.sh # File path
+    permissions: "0777"             # File permission
+    owner: "root:root"              # File ownership
+    content: |                      # File content
+      #!/bin/bash
+
+      startloop() {
+        pkill vlc
+        sudo -u pi vlc -I ncurses --extraintf http --loop /home/ftp --http-password chkl19190321 --http-port 3210 
+      }
+      current=$(date '+%H%M')
+      dow=$(date '+%u')
+
+      if [[ $dow == [1-5] && $current > 0630 && $current < 1500 ]] || [[ $dow == 6 && $current > 0600 && $current < 1300 ]]; then
+      startloop;
+      fi 
+
+  - path: /etc/cron.d/videoloop
+    content: |                      # File content
+      31 06 * * 1-5 pi /usr/bin/screen -dmS videoloop /opt/raspivideo/videoloop.sh 
+      31 06 * * 1-5 root raspi-gpio set 17 op dl
+      31 06 * * 1-5 root echo "on 0" | /usr/bin/cec-client -s
+      59 14 * * 1-5 pi /usr/bin/screen -XS videoloop quit
+      59 14 * * 1-5 root raspi-gpio set 17 op dh
+      59 14 * * 1-5 root echo "off 0" | /usr/bin/cec-client -s
+      01 06 * * 6 pi /usr/bin/screen -dmS videoloop /opt/raspivideo/videoloop.sh 
+      01 06 * * 6 root raspi-gpio set 17 op dl
+      01 06 * * 6 root echo "on 0" | /usr/bin/cec-client -s
+      59 12 * * 6 pi /usr/bin/screen -XS videoloop quit
+      59 12 * * 6 root raspi-gpio set 17 op dh
+      59 12 * * 6 root echo "off 0" | /usr/bin/cec-client -s
+
+      @reboot pi /usr/bin/screen -dmS videoloop /opt/raspivideo/videoloop.sh
+      @reboot root raspi-gpio set 17 op dl
+      @reboot root echo "on 0" | /usr/bin/cec-client -s
+
+# # Reference(s):
+# # - https://cloudinit.readthedocs.io/en/latest/topics/modules.html#write-files
+
+# ## Run commands on first boot (runs after all module)
+runcmd:
+  - systemctl enable --now cron proftpd
+  - sed -i '/RequireValidShell/c\RequireValidShell off' /etc/proftpd/proftpd.conf
+#   - echo BerryOS
+# # Reference(s):
+# # - https://cloudinit.readthedocs.io/en/latest/topics/modules.html#runcmd
+
+# ## Reboot system after provisioning
+power_state:
+  mode: reboot
+# # Reference(s):
+# # - https://cloudinit.readthedocs.io/en/latest/topics/modules.html#power-state-change
