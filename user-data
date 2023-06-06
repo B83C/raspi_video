@@ -5,14 +5,14 @@
 #
 
 # ## Set system hostname
-hostname: raspivideo2                    # System hostname
+hostname: set_your_hostname_here                    # System hostname
 manage_etc_hosts: true              # If true, will also update the /etc/hosts file entries
 # # Reference(s):
 # # - https://cloudinit.readthedocs.io/en/latest/topics/modules.html#set-hostname
 # # - https://cloudinit.readthedocs.io/en/latest/topics/modules.html#update-etc-hosts
 
 # ## Configure default user access
-password: CHkl19190321 # Set default user password
+password: set_your_password_here # Set default user password
 chpasswd: { expire: false }         # Do not expire password after first login
 ssh_pwauth: true                    # Enable SSH password authentication for default user
 # ssh_authorized_keys:                # Set SSH authorized keys for default user
@@ -29,7 +29,6 @@ ssh_pwauth: true                    # Enable SSH password authentication for def
 users:
   - default
   - name: ftp
-    passwd: $y$j9T$7Dc40hozymD13FDvQfEvU/$zk9n2xHGzKEWy/EjSjSFF7oDXbs/kX9Ijmkt7cDr1l/
     shell: /usr/sbin/nologin                # Set user default shell
     chpasswd: { expire: false }     # Do not expire password after first login
 
@@ -91,7 +90,7 @@ write_files:
 
       startloop() {
         pkill vlc
-        sudo -u pi vlc -I ncurses --extraintf http --loop /home/ftp --http-password chkl19190321 --http-port 3210 
+        sudo -u pi vlc -I ncurses --extraintf http --loop /home/ftp --http-password enter_your_password_here --http-port 3210 
       }
       current=$(date '+%H%M')
       dow=$(date '+%u')
