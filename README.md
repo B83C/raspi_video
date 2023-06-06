@@ -1,37 +1,23 @@
-Setting up RasPi for auto Video Play at TV(USB connection)
+# Raspberry Pi Augmented TV Show player 
 
+## Hardware prerequisites:
+- Raspberry Pi
+- SD Card
+- SD Card Reader
 
-Hardware Preparation:
-- RasPi with SD Card slot
-- SD Card for booting
-- SD Card Reader to configure Bootable SD Card.
-* NOTE: 
-  - For first boot Raspi after Step 2, 
-    RasPi must have Wired Ethernet connection 
-    and accesible to Internet.
+## Preparation
+1. OS Installation
+- Download the latest Berry OS image here : https://github.com/0rax/BerryOS/releases
+  ![image](https://github.com/B83C/raspi_video/assets/72597973/fa578165-98bd-4a53-b8d1-d2521c7ee24e)
 
+- Flash the OS Image using tools like Rufus/Raspberry pi Imager 
+  - Rufus: https://rufus.ie/en/
+  - Raspberry Pi Imager https://www.raspberrypi.com/software/
 
-Configure Bootable SD Card 
-
-Step1: OS Installation
-- download berryOS
-     - URL https://github.com/0rax/BerryOS
-     - download from the Release
-          BerryOS/arm64: Image berryos-arm64-bullseye-20230117.img.xz
-- flash using rufus / raspi imager
-     - URL
-       https://www.raspberrypi.com/news/raspberry-pi-imager-imaging-utility/
-- copy files into SD card "boot". 
-
-
-Step 2: RasPi Configuration
-
-- Github: b83c (Hengyu account)
-     - URL: https://github.com/B83C/raspi_video
-
-- download raw file without extension:
-    network-config
-    user-data
+2. Configuration
+- Download raw configuration files
+    [network-config](network-config)
+    [user-data](user-data)
 
 - copy both raw files into SD card "boot". 
   *NOTE: raw file without extension
