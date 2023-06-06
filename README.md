@@ -32,7 +32,7 @@
     
   3) Password for vlc web interface
 
-    ![image](https://github.com/B83C/raspi_video/assets/72597973/3f868f3b-ef6f-4830-be3c-415ecb754b75)
+    ![image](https://github.com/B83C/raspi_video/assets/72597973/a61468cb-a0ea-485e-b63b-12c51db3cc13)
     
 
 ### 3. IP Address / DNS Hostname (Optional)
