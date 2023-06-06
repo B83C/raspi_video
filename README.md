@@ -7,6 +7,7 @@
 
 ## Preparation
 1. OS Installation
+-------------------
 - Download the latest Berry OS image here : https://github.com/0rax/BerryOS/releases
   ![image](https://github.com/B83C/raspi_video/assets/72597973/fa578165-98bd-4a53-b8d1-d2521c7ee24e)
 
@@ -15,106 +16,60 @@
   - Raspberry Pi Imager https://www.raspberrypi.com/software/
 
 2. Configuration
-- Download raw configuration files
-    [network-config](network-config)
-    [user-data](user-data)
+-----------------
+- Download raw configuration files into the "boot" partition ( or detected as "boot" drive on Windows) of the SD Card. **Remember to save the files raw without any extension**
+  * [network-config](network-config?raw=1)
+  * [user-data](user-data?raw=1)
+ 
+- Modify the contents of user-data as needed
+  1) Device hostname
+    ![image](https://github.com/B83C/raspi_video/assets/72597973/bdee83b5-50ef-4f94-bde7-ad8b4a0ac2f9)
+  2) Password for user pi
+    ![image](https://github.com/B83C/raspi_video/assets/72597973/6326770f-8cc9-4637-821d-89cc66e6020c)
+  3) Password for vlc web interface
+    ![image](https://github.com/B83C/raspi_video/assets/72597973/3f868f3b-ef6f-4830-be3c-415ecb754b75)
 
-- copy both raw files into SD card "boot". 
-  *NOTE: raw file without extension
+3. IP Address / DNS Hostname (Optional)
+  - The MAC Address (which is needed for fixed local ip) can be obtained on first boot or via the network admin control panel. (Please refer to someone in the know)
 
-- modify user-data information
-  1) hostname
-      # ## Set system hostname
-      hostname: <raspivideo>   
-     *NOTE: current Hostname: raspi1.vid
-  2) ...
-
-
-Step 3: Set up fix IP (refer to huan ling)
-- network setting for network access to the RasPi
-  *NOTE: set new a record in domain name server : raspi1.vid
-- Fix IP: 10.15.11.252
-- Port: 3210  ??
-- URL: ...
-
-
-First Boot RasPi
-- NOTE: RasPi must have wired internet connection
-- Slot in the bootable SD Card into the RasPi
-- HDMI connecting the RasPi to TV
-- Switch ON the connected Raspi, TV will switch ON automatically (script:??)
-- 
-
-
-*********************************************************
-
-Remote Connetion Configuration
-1- FTP to connect
-   URL- ftp://raspi1.vid
-   Port- 21
-   login- username "ftp", password "CHkl19190321"
-
-2- SSH Connect
-   URL/IP- ?
-   login- username "pi", password "CHkl19190321" 
-
-3- HTTP Connect
-   URL- http://raspi1.vid:3210 (not function at my computer?)
-   login- username <empty>, password "chkl19190321" 
-   - purpose: web interface 其实只能控制视频的播放，和检查视频的播放进程 
+## Initial boot
+- As per [network-config](network-config?raw=1), the default wireless SSID has been set to CHKLWIFI, meaning it should connect automatically to CHKLWIFI on boot.
+- It is much recommended to use ethernet connection to reduce the hassle when setting up the device.
+- Internet connection is *required* to set up the device on initial boot, either **whitelist** the device on wireless connection, or use ethernet to bypass the network restrictions. Should there be any problems, you may reset the initial setup by doing :
+  ```sh
+  sudo cloud-init clean --logs
+  sudo reboot
+  ```
+- After the setup succeeded, kindly log in to pi/root user and change the password of the ftp user : 
+  ```sh
+  sudo passwd ftp
+  ```
+  
+## Notes
+- Default remote connection :
+  * ftp : 
+    - user : ftp
+  * ssh : 
+    - user : pi
+  * http web-client for vlc
+    - url : http://the_pi_of_the_raspi:3210
+    - username: \<empty\>
+ - This setup uses VLC for playing videos. Meanwhile, the vlc is set up to interact with user control via CLI(ncurses)/Web interface.
+  * To access the CLI Interface, kindly ssh into the machine and perform `screen -r`. This will attach the current terminal into a GNU Screen session.
+  * To exit the the gnu screen session and return to the bash terminal, press and hold `\<ctrl\> + a`, then `d`
 
 *********************************************************
 
-Video list maintenance
-- Video file limit: up to 1080p, 4K not supported in this RasPi
-- Size Limit?
-- video file type
+## Limitations
+- Video encoding : 1080p/H.264 encoding (raspberry pi's do not have that much support for other encodings)
 - Video File Location
     folder: /home/ftp
-- NOTE: Must REBOOT RasPi upon updating Video files
-    - SSH Connect (may use Putty), upon successfully login, 
-      type and execute command "sudo reboot".
-...
-
-
-*********************************************************
-
-Video Playing Progress Remote Checking
-- Perform SSH Connection to server
-- Attach/Detach from running session, "342.videoloop"
-- attaching into the session, type command: screen -r
-- to detached from the session, press <ctrl> + <a>, then press <d>
-
-*********************************************************
-
-RasPi OS Setting
-OS: ?
-admin user: ?, password: ?
-user: pi, password: CHkl19190321
-
-
-*********************************************************
-
-RasPi Software Specification
-1) FTP server: ProFTPD Server (Debian) 
-Video Player: VLC
-RDP
-Web server 
-...
-
-
-*********************************************************
-
-RasPi Hardware Specification
-- Model: ?
-- CPU: ?
-- Memory: 512MB...
-- External storage: SD Card... 
-- WIFI? SSID setting?
-- Bluetooth?
-- Network x1,HDMIx1,USBx3...
-- ...
-
-*********************************************************
-
-
+- VLC may or may not update the playlist automatically, if uncertain, perform a reboot for new video entries to show up.
+  * You may reboot by performing `sudo reboot` via ssh.
+  
+## Used software
+  - VLC Media player
+  - GNU Screen
+  - proftpd (Ftp server)
+  - raspi-gpio
+  - cec-utils
