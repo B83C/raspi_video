@@ -59,7 +59,7 @@
     - user : pi
   * http web-client for vlc
     - url : http://the_pi_of_the_raspi:3210
-    - username: \<empty\>
+    - username: < empty >
  - This setup uses VLC for playing videos. Meanwhile, the vlc is set up to interact with user control via CLI(ncurses)/Web interface.
   * To access the CLI Interface, kindly ssh into the machine and perform `screen -r`. This will attach the current terminal into a GNU Screen session.
   * To exit the the gnu screen session and return to the bash terminal, press and hold `\<ctrl\> + a`, then `d`
