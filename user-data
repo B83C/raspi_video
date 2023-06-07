@@ -204,7 +204,7 @@ write_files:
         icon: "&#x2965"
 
       - title: Restart VLC
-        shell: /opt/raspivideo/videoloop.sh 
+        shell: sudo -u pi /opt/raspivideo/videoloop.sh 
         icon: "&#x21BA"
 
       - title: Reboot System
