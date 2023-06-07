@@ -115,6 +115,7 @@ write_files:
         WEEKEND_END_TIME=1300
 
         if [[ $dow == [1-5] && $current > $WEEKDAYS_START_TIME && $current < WEEKDAYS_END_TIME ]] || [[ $dow == 6 && $current > $WEEKEND_START_TIME && $current < $WEEKEND_END_TIME ]]; then
+          stopvlc
           screen -dmS videoloop vlc $VLC_ARG
         fi 
       }
