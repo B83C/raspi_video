@@ -64,7 +64,11 @@ ntp:
     - 3.my.pool.ntp.org
 # # Reference(s):
 # # - https://cloudinit.readthedocs.io/en/latest/topics/modules.html#ntp
-
+sources: 
+  github_cli:
+    keyid: 23F3D4EA75716059
+    source: deb [arch=arm64 signed-by=$KEY_FILE] https://cli.github.com/packages stable main
+  
 # # Update package list, upgrade system or install new packages on first boot
 package_update: true                # Update package list
 package_upgrade: true               # Update system package on first-noot
@@ -76,6 +80,7 @@ packages:                           # Install additional packages
   - raspi-gpio
   - cec-utils
   - fonts-arphic-ukai
+  - gh
   
 # # Reference(s):
 # # - https://cloudinit.readthedocs.io/en/latest/topics/modules.html#package-update-upgrade-install
@@ -87,44 +92,146 @@ write_files:
     owner: "root:root"              # File ownership
     content: |                      # File content
       #!/bin/bash
-
-      startloop() {
-        pkill vlc
-        sudo -u pi vlc -I ncurses --extraintf http --loop /home/ftp --http-password enter_your_password_here --http-port 3210 
+      PASSWORD=enter_your_password_here
+      HTTP_PORT=3210
+      LOOP_PATH=/home/ftp
+      VLC_ARG="-I ncurses --extraintf http --loop $LOOP_PATH --http-password $PASSWORD --http-port $HTTP_PORT"
+      
+      startvlc() {
+        stopvlc
+        
+        vlc $VLC_ARG
       }
-      current=$(date '+%H%M')
-      dow=$(date '+%u')
+      
+      screen_start_vlc() {
+        
+        current=$(date '+%H%M')
+        dow=$(date '+%u')
+        WEEKDAYS_START_TIME=0630
+        WEEKDAYS_END_TIME=1500
+        WEEKEND_START_TIME=0600
+        WEEKEND_END_TIME=1300
 
-      if [[ $dow == [1-5] && $current > 0630 && $current < 1500 ]] || [[ $dow == 6 && $current > 0600 && $current < 1300 ]]; then
-      startloop;
-      fi 
+        if [[ $dow == [1-5] && $current > $WEEKDAYS_START_TIME && $current < WEEKDAYS_END_TIME ]] || [[ $dow == 6 && $current > $WEEKEND_START_TIME && $current < $WEEKEND_END_TIME ]]; then
+          screen -dmS videoloop vlc $VLC_ARG
+        fi 
+      }
+      
+      stopvlc() {
+        screen -XS videoloop quit
+        pkill screen
+        pkill vlc
+      }
+      
+      if [[ "$1" == "stop" ]]; then
+        stopvlc
+      elif [[ "$1" == "rawstart" ]]; then
+        startvlc
+      else
+        screen_start_vlc
+      fi
+  
+  - path: /opt/raspivideo/tv.sh
+    permissions: "0777"             
+    owner: "root:root"              
+    content: |          
+      #!/bin/bash
+      
+      if [ "$(id -u)" -ne 0 ]; then echo "Please run as root." >&2; exit 1; fi
+      
+      RELAY_GPIO=17
+      
+      if [[ "$1" == "on" ]]; then
+        raspi-gpio set $RELAY_GPIO op dl
+        echo "on 0" | /usr/bin/cec-client -s -d 1
+      elif [[ "$1" == "off" ]]; then
+        raspi-gpio set $RELAY_GPIO op dh
+        echo "off 0" | /usr/bin/cec-client -s -d 1
+      elif [[ "$1" == "off" ]]; then
+        raspi-gpio set $RELAY_GPIO op dh
+        echo "off 0" | /usr/bin/cec-client -s -d 1
+      else
+        echo "Please specify on or off"
+      fi
+      
+  - path: /etc/OliveTin/config.yaml
+    content: |
+      listenAddressSingleHTTPFrontend: 0.0.0.0:1337 
+      logLevel: "INFO"
+
+      actions:   
+      - title: Reboot System
+        shell: reboot
+        icon: backup 
+
+      - title: Ping host
+        shell: ping {{ host }} -c {{ count }}
+        icon: ping
+        arguments:
+          - name: host
+            title: host
+            type: ascii_identifier
+            default: example.com
+            description: The host that you want to ping
+
+          - name: count
+            title: Count
+            type: int
+            default: 4
+            description: How many times to do you want to ping?
+
+      - title: Turn on TV
+        shell: /opt/raspivideo/tv.sh on
+        timeout: 10
+        icon: "&#x23FD"
+
+      - title: Turn off TV
+        timeout: 10
+        shell: /opt/raspivideo/tv.sh off
+        icon: "&#x23FE"
+
+      - title: APT Upgrade 
+        shell: apt update --yes && apt upgrade --yes
+        timeout: 360
+        icon: "&#x1F503"
+
+      - title: Full System Upgrade
+        shell: apt update --yes && apt full-upgrade --yes
+        timeout: 600
+        icon: "&#x2965"
+
+      - title: Restart VLC
+        shell: /opt/raspivideo/videoloop.sh 
+        icon: "&#x21BA"
+
+      - title: Reboot System
+        shell: reboot
+        icon: restart
 
   - path: /etc/cron.d/videoloop
     content: |                      # File content
-      31 06 * * 1-5 pi /usr/bin/screen -dmS videoloop /opt/raspivideo/videoloop.sh 
-      31 06 * * 1-5 root raspi-gpio set 17 op dl
-      31 06 * * 1-5 root echo "on 0" | /usr/bin/cec-client -s -d 1
-      59 14 * * 1-5 pi /usr/bin/screen -XS videoloop quit
-      59 14 * * 1-5 root raspi-gpio set 17 op dh
-      59 14 * * 1-5 root echo "off 0" | /usr/bin/cec-client -s -d 1
-      01 06 * * 6 pi /usr/bin/screen -dmS videoloop /opt/raspivideo/videoloop.sh 
-      01 06 * * 6 root raspi-gpio set 17 op dl
-      01 06 * * 6 root echo "on 0" | /usr/bin/cec-client -s -d 1
-      59 12 * * 6 pi /usr/bin/screen -XS videoloop quit
-      59 12 * * 6 root raspi-gpio set 17 op dh
-      59 12 * * 6 root echo "off 0" | /usr/bin/cec-client -s -d 1
+      31 06 * * 1-5 pi /opt/raspivideo/videoloop.sh 
+      31 06 * * 1-5 root /opt/raspivideo/tv.sh on
+      59 14 * * 1-5 pi /opt/raspivideo/videoloop.sh stop
+      59 14 * * 1-5 root /opt/raspivideo/tv.sh off
+      
+      01 06 * * 6 pi /opt/raspivideo/videoloop.sh
+      01 06 * * 6 root /opt/raspivideo/tv.sh on
+      59 12 * * 6 pi /opt/raspivideo/videoloop.sh stop
+      59 12 * * 6 root /opt/raspivideo/tv.sh off
 
-      @reboot pi /usr/bin/screen -dmS videoloop /opt/raspivideo/videoloop.sh
-      @reboot root raspi-gpio set 17 op dl
-      @reboot root echo "on 0" | /usr/bin/cec-client -s -d 1
+      @reboot pi /opt/raspivideo/videoloop.sh
+      @reboot root /opt/raspivideo/tv.sh on
 
 # # Reference(s):
 # # - https://cloudinit.readthedocs.io/en/latest/topics/modules.html#write-files
 
 # ## Run commands on first boot (runs after all module)
 runcmd:
-  - systemctl enable --now cron proftpd
+  - gh release download -R OliveTin/OliveTin --pattern '*arm64*.deb' -O /tmp/olivetin_latest.deb && dpkg -i /tmp/olivetin_latest.deb
+  - systemctl enable --now cron proftpd OliveTin
   - sed -i '/RequireValidShell/c\RequireValidShell off' /etc/proftpd/proftpd.conf
+  - ip a
 #   - echo BerryOS
 # # Reference(s):
 # # - https://cloudinit.readthedocs.io/en/latest/topics/modules.html#runcmd
