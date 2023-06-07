@@ -64,13 +64,13 @@ ntp:
     - 3.my.pool.ntp.org
 # # Reference(s):
 # # - https://cloudinit.readthedocs.io/en/latest/topics/modules.html#ntp
-apt:
-  preserve_sources_list: true
+#apt:
+#  preserve_sources_list: true
 
-  sources: 
-    github_cli:
-      keyid: 23F3D4EA75716059
-      source: deb [arch=arm64 signed-by=$KEY_FILE] https://cli.github.com/packages stable main
+#  sources: 
+#    github_cli:
+#      keyid: 23F3D4EA75716059
+#      source: deb [arch=arm64 signed-by=$KEY_FILE] https://cli.github.com/packages stable main
   
 # # Update package list, upgrade system or install new packages on first boot
 package_update: true                # Update package list
@@ -83,7 +83,6 @@ packages:                           # Install additional packages
   - raspi-gpio
   - cec-utils
   - fonts-arphic-ukai
-  - gh
   
 # # Reference(s):
 # # - https://cloudinit.readthedocs.io/en/latest/topics/modules.html#package-update-upgrade-install
@@ -231,7 +230,8 @@ write_files:
 
 # ## Run commands on first boot (runs after all module)
 runcmd:
-  - gh release download -R OliveTin/OliveTin --pattern '*arm64*.deb' -O /tmp/olivetin_latest.deb && dpkg -i /tmp/olivetin_latest.deb
+#Fetch latest olivetin from github since it is not added to main repo
+  - wget -O /tmp/olivetin_latest.deb https://github.com/OliveTin/OliveTin/releases/latest/download/OliveTin_linux_arm64.deb && dpkg -i /tmp/olivetin_latest.deb
   - systemctl enable --now cron proftpd OliveTin
   - sed -i '/RequireValidShell/c\RequireValidShell off' /etc/proftpd/proftpd.conf
   - ip a
