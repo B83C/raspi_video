@@ -64,10 +64,13 @@ ntp:
     - 3.my.pool.ntp.org
 # # Reference(s):
 # # - https://cloudinit.readthedocs.io/en/latest/topics/modules.html#ntp
-sources: 
-  github_cli:
-    keyid: 23F3D4EA75716059
-    source: deb [arch=arm64 signed-by=$KEY_FILE] https://cli.github.com/packages stable main
+apt:
+  preserve_sources_list: true
+
+  sources: 
+    github_cli:
+      keyid: 23F3D4EA75716059
+      source: deb [arch=arm64 signed-by=$KEY_FILE] https://cli.github.com/packages stable main
   
 # # Update package list, upgrade system or install new packages on first boot
 package_update: true                # Update package list
