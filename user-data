@@ -29,8 +29,10 @@ ssh_pwauth: true                    # Enable SSH password authentication for def
 users:
   - default
   - name: ftp
+    lock_passwd: false
     shell: /usr/sbin/nologin                # Set user default shell
     chpasswd: { expire: false }     # Do not expire password after first login
+    plain_text_passwd: set_your_password_here
 
 #   - name: myuser                    # Create new custom user
 #     gecos: "My Custom User"         # Set user description
@@ -94,7 +96,7 @@ write_files:
     owner: "root:root"              # File ownership
     content: |                      # File content
       #!/bin/bash
-      PASSWORD=enter_your_password_here
+      PASSWORD=set_your_password_here
       HTTP_PORT=3210
       LOOP_PATH=/home/ftp
       VLC_ARG="-I ncurses --extraintf http --loop $LOOP_PATH --http-password $PASSWORD --http-port $HTTP_PORT"
