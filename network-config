@@ -7,4 +7,4 @@ wifis:
   wlan0:
     dhcp4: true
     access-points:
-      "CHKLWIFI": {}
+      "your_wifi_ssid": {}
