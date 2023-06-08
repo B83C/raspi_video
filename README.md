@@ -24,23 +24,23 @@
 - Modify the contents of user-data as needed
   1) Device hostname [(user-data)](user-data?raw=1)
   
-    ![image](https://github.com/B83C/raspi_video/assets/72597973/bdee83b5-50ef-4f94-bde7-ad8b4a0ac2f9)
+    ![image](https://github.com/B83C/raspi_video/assets/72597973/f5e435ce-912a-45e5-992a-e4b5dc8eb002)
     
   2) Password for user pi [(user-data)](user-data?raw=1)
 
-    ![image](https://github.com/B83C/raspi_video/assets/72597973/6326770f-8cc9-4637-821d-89cc66e6020c)
+    ![image](https://github.com/B83C/raspi_video/assets/72597973/bc61374a-0805-4d30-8470-bc7f7982aedd)
     
   3) Password for user ftp [(user-data)](user-data?raw=1)
 
-    ![image](https://github.com/B83C/raspi_video/assets/72597973/6326770f-8cc9-4637-821d-89cc66e6020c)
+    ![image](https://github.com/B83C/raspi_video/assets/72597973/d53d01da-3eee-44bd-924d-7024991123a9)
     
   4) Password for vlc web interface [(user-data)](user-data?raw=1)
 
-    ![image](https://github.com/B83C/raspi_video/assets/72597973/a61468cb-a0ea-485e-b63b-12c51db3cc13)
+    ![image](https://github.com/B83C/raspi_video/assets/72597973/2e863b24-2063-49d0-b4ed-3969a5c88b77)
   
   5) Modify ssid for wireless connection [(network-config)](network-config?raw=1)
 
-    ![image](https://github.com/B83C/raspi_video/assets/72597973/a61468cb-a0ea-485e-b63b-12c51db3cc13)
+    ![image](https://github.com/B83C/raspi_video/assets/72597973/a3abe186-c236-49e6-a6e0-6517b62ceef9)
      
      
 ### 3. IP Address / DNS Hostname (Optional)
