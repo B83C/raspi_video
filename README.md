@@ -67,7 +67,7 @@
     - username: < empty >
  - This setup uses VLC for playing videos. Meanwhile, user may control the player via CLI(ncurses)/Web interface.
   * To access the CLI Interface, kindly ssh into the machine then perform `screen -r`. This will attach the current terminal into a GNU Screen session.
-  * To exit/detach (without killing) the the gnu screen session and return to the bash terminal, press and hold `\<ctrl\> + a`, then `d`
+  * To exit/detach (without killing) the the gnu screen session and return to the bash terminal, press and hold `<ctrl> + a`, then `d`
 
 ## Limitations
 - Video encoding : 1080p/H.264 encoding (raspberry pi's do not have that much support for other encodings)
