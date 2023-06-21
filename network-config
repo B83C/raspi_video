@@ -1,10 +1,10 @@
 version: 2
 ethernets:
   eth0:
-    optional: true
     dhcp4: true
 wifis:
   wlan0:
     dhcp4: true
+    optional: true
     access-points:
       "your_wifi_ssid": {}
