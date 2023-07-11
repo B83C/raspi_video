@@ -14,9 +14,13 @@
 - Download the latest Berry OS image here : https://github.com/0rax/BerryOS/releases
   ![image](https://github.com/B83C/raspi_video/assets/72597973/fa578165-98bd-4a53-b8d1-d2521c7ee24e)
 
-- Flash the OS Image using tools like Rufus/Raspberry pi Imager 
+- Flash the OS Image using tools like Rufus/Raspberry pi Imager/Custom imager
   - Rufus: https://rufus.ie/en/
   - Raspberry Pi Imager https://www.raspberrypi.com/software/
+  - XZcat + dd on linux :
+    *Please may attention to the name of the file and the dev node of the sd card*
+    ![image](https://github.com/B83C/raspi_video/assets/72597973/0ba2fae9-7345-47a3-917f-41d26758ac91)
+
 
 ### 2. Configuration
 
