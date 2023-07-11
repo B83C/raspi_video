@@ -68,6 +68,7 @@ packages:                           # Install additional packages
   - rsync                         #File synchroniser
   - cec-utils                     #CEC utility to manage tv via HDMI-CEC
   - fonts-arphic-ukai             #Font to display chinese character on screen
+  - sshpass
   
 # # Reference(s):
 # # - https://cloudinit.readthedocs.io/en/latest/topics/modules.html#package-update-upgrade-install
