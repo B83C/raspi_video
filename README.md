@@ -1,5 +1,8 @@
 # Raspberry Pi Augmented TV Show player 
 
+## Note:
+- This is meant to be used with my gui controller ![here](https://github.com/B83C/control-centre-rs)!
+
 ## Hardware prerequisites:
 - Raspberry Pi
 - SD Card
@@ -29,16 +32,8 @@
   2) Password for user pi [(user-data)](user-data?raw=1)
 
     ![image](https://github.com/B83C/raspi_video/assets/72597973/bc61374a-0805-4d30-8470-bc7f7982aedd)
-    
-  3) Password for user ftp [(user-data)](user-data?raw=1)
-
-    ![image](https://github.com/B83C/raspi_video/assets/72597973/d53d01da-3eee-44bd-924d-7024991123a9)
-    
-  4) Password for vlc web interface [(user-data)](user-data?raw=1)
-
-    ![image](https://github.com/B83C/raspi_video/assets/72597973/2e863b24-2063-49d0-b4ed-3969a5c88b77)
   
-  5) Modify ssid for wireless connection [(network-config)](network-config?raw=1)
+  3) Modify ssid for wireless connection [(network-config)](network-config?raw=1)
 
     ![image](https://github.com/B83C/raspi_video/assets/72597973/a3abe186-c236-49e6-a6e0-6517b62ceef9)
      
@@ -56,16 +51,11 @@
   
 ## Notes
 - Video File Location
-    folder: /home/ftp
+    folder: /opt/tv_video/videos
 - Default remote connection :
-  * ftp : 
-    - user : ftp
   * ssh : 
     - user : pi
-  * http web-client for vlc
-    - url : http://the_ip_of_the_raspi:3210
-    - username: < empty >
- - This setup uses VLC for playing videos. Meanwhile, user may control the player via CLI(ncurses)/Web interface.
+- VLC Playback control
   * To access the CLI Interface, kindly ssh into the machine then perform `screen -r`. This will attach the current terminal into a GNU Screen session.
   * To exit/detach (without killing) the the gnu screen session and return to the bash terminal, press and hold `<ctrl> + a`, then `d`
 
@@ -75,7 +65,7 @@
 ## Used software
   - VLC Media player
   - GNU Screen
-  - proftpd (FTP server)
-  - raspi-gpio
   - cec-utils
-  - OliveTin (Web-interface for shell scripts written in Go)
+  - rsync
+
+    
