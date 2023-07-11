@@ -166,6 +166,7 @@ write_files:
 # ## Run commands on first boot (runs after all module)
 runcmd:
     - mkdir -p /opt/tv_video/videos && chmod -R 777 /opt/tv_video/videos
+    - wget -O /opt/tv_video/drm-capture https://github.com/B83C/drm-vc4-grabber/releases/latest/download/drm-capture-aarch64 && chmod +x /opt/tv_video/drm-capture
 
 #Fetch latest olivetin from github since it is not added to main repo
 #   - echo BerryOS
