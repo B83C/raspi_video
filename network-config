@@ -1,8 +1,5 @@
 version: 2
-ethernets:
-  eth0:
-    optional: true
-    dhcp4: true
+renderer: NetworkManager
 wifis:
   wlan0:
     dhcp4: true
