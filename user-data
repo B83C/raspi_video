@@ -139,7 +139,7 @@ write_files:
         echo "on 0" | /usr/bin/cec-client -s -d 1
       elif [[ "$1" == "off" ]]; then
         echo $OFF_STATE > $GPIO_PATH/value
-        if [[ $(cat $GPIO_PATH/value) == "$ON_STATE" ]]; then 
+        if [[ $(cat $GPIO_PATH/value) == $ON_STATE ]]; then 
           echo "The relay can't be turned off, it might be forced to turn on"
         fi 
         echo "off 0" | /usr/bin/cec-client -s -d 1
