@@ -128,7 +128,7 @@ write_files:
       
       RELAY_GPIO=17
       OFF_STATE=1
-      ON_STATE=$(( DEFAULT_OFF_STATE ^ 1 ))
+      ON_STATE=$(( OFF_STATE ^ 1 ))
       GPIO_PATH=/sys/class/gpio/gpio$RELAY_GPIO
 
       [[ -e $GPIO_PATH ]] || echo $RELAY_GPIO > /sys/class/gpio/export
