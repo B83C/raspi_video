@@ -127,17 +127,19 @@ write_files:
       if [ "$(id -u)" -ne 0 ]; then echo "Please run as root." >&2; exit 1; fi
       
       RELAY_GPIO=17
+      OFF_STATE=1
+      ON_STATE=$(( DEFAULT_OFF_STATE ^ 1 ))
       GPIO_PATH=/sys/class/gpio/gpio$RELAY_GPIO
 
       [[ -e $GPIO_PATH ]] || echo $RELAY_GPIO > /sys/class/gpio/export
       echo out > $GPIO_PATH/direction
       
       if [[ "$1" == "on" ]]; then
-        echo 0 > $GPIO_PATH/value
+        echo $ON_STATE > $GPIO_PATH/value
         echo "on 0" | /usr/bin/cec-client -s -d 1
       elif [[ "$1" == "off" ]]; then
-        echo 1 > $GPIO_PATH/value
-        if [[ $(cat $GPIO_PATH/value) == "0" ]]; then 
+        echo $OFF_STATE > $GPIO_PATH/value
+        if [[ $(cat $GPIO_PATH/value) == "$ON_STATE" ]]; then 
           echo "The relay can't be turned off, it might be forced to turn on"
         fi 
         echo "off 0" | /usr/bin/cec-client -s -d 1
@@ -150,13 +152,13 @@ write_files:
     content: |                      # File content
       31 06 * * 1-5 pi /opt/tv_video/videoloop.sh 
       31 06 * * 1-5 root /opt/tv_video/tv.sh on
-      59 14 * * 1-5 pi /opt/tv_video/videoloop.sh stop
-      59 14 * * 1-5 root /opt/tv_video/tv.sh off
+      59 15 * * 1-5 pi /opt/tv_video/videoloop.sh stop
+      59 15 * * 1-5 root /opt/tv_video/tv.sh off
       
       01 06 * * 6 pi /opt/tv_video/videoloop.sh
       01 06 * * 6 root /opt/tv_video/tv.sh on
-      59 12 * * 6 pi /opt/tv_video/videoloop.sh stop
-      59 12 * * 6 root /opt/tv_video/tv.sh off
+      59 13 * * 6 pi /opt/tv_video/videoloop.sh stop
+      59 13 * * 6 root /opt/tv_video/tv.sh off
 
       @reboot pi /opt/tv_video/videoloop.sh
       @reboot root /opt/tv_video/tv.sh on
