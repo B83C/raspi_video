@@ -65,6 +65,7 @@
 
 ## Limitations
 - Video encoding : 1080p/H.264 encoding (raspberry pi's do not have that much support for other encodings)
+- To work around the blocking of system-networkd waiting for network to be online run `systemctl mask systemd-networkd-wait-online`
 
 ## Used software
   - VLC Media player
